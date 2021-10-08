@@ -16,9 +16,23 @@ class MyCustomView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val hourPointerWidth = 15f
-    private val minutePointerWidth = 10f
-    private val secondPointerWidth = 4f
+    companion object {
+        private const val DEFAULT_HOUR_POINTER_COLOR = Color.BLACK
+        private const val DEFAULT_MINUTE_POINTER_COLOR = Color.RED
+        private const val DEFAULT_SECOND_POINTER_COLOR = Color.BLUE
+        private const val DEFAULT_HOUR_POINTER_WIDTH = 40f
+        private const val DEFAULT_MINUTE_POINTER_WIDTH = 20f
+        private const val DEFAULT_SECOND_POINTER_WIDTH = 10f
+    }
+
+    private var hourPointerColor = DEFAULT_HOUR_POINTER_COLOR
+    private var minutePointerColor = DEFAULT_MINUTE_POINTER_COLOR
+    private var secondPointerColor = DEFAULT_SECOND_POINTER_COLOR
+
+    private var hourPointerWidth = DEFAULT_HOUR_POINTER_WIDTH
+    private var minutePointerWidth = DEFAULT_MINUTE_POINTER_WIDTH
+    private var secondPointerWidth = DEFAULT_SECOND_POINTER_WIDTH
+
     private val pointerRange = 20f
     private val scaleMax = 50
     private var radius = 400f
@@ -29,11 +43,48 @@ class MyCustomView @JvmOverloads constructor(
         isAntiAlias = true
     }
 
+    init {
+        setupAttributes(attrs)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         centerX = (width / 2).toFloat()
         centerY = (height / 2).toFloat()
+    }
+
+    //Метод установки кастомных аттрибутов в xml
+    private fun setupAttributes(attrs: AttributeSet?) {
+        val typedArray = context.theme.obtainStyledAttributes(
+            attrs, R.styleable.MyCustomView,
+            0, 0
+        )
+        hourPointerColor = typedArray.getColor(
+            R.styleable.MyCustomView_hourPointerColor,
+            DEFAULT_HOUR_POINTER_COLOR
+        )
+        minutePointerColor = typedArray.getColor(
+            R.styleable.MyCustomView_minutePointerColor,
+            DEFAULT_MINUTE_POINTER_COLOR
+        )
+        secondPointerColor = typedArray.getColor(
+            R.styleable.MyCustomView_secondPointerColor,
+            DEFAULT_SECOND_POINTER_COLOR
+        )
+        hourPointerWidth = typedArray.getDimension(
+            R.styleable.MyCustomView_hourPointerWidth,
+            DEFAULT_HOUR_POINTER_WIDTH
+        )
+        minutePointerWidth = typedArray.getDimension(
+            R.styleable.MyCustomView_minutePointerWidth,
+            DEFAULT_MINUTE_POINTER_WIDTH
+        )
+        secondPointerWidth = typedArray.getDimension(
+            R.styleable.MyCustomView_secondPointerWidth,
+            DEFAULT_SECOND_POINTER_WIDTH
+        )
+        typedArray.recycle()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -90,7 +141,8 @@ class MyCustomView @JvmOverloads constructor(
             hourPointerWidth / 2,
             radius / 6
         )
-        myPaint.color = Color.BLACK
+        myPaint.color = hourPointerColor
+        myPaint.style = Paint.Style.FILL
         myPaint.strokeWidth = 40f
         canvas.drawRoundRect(rectHour, pointerRange, pointerRange, myPaint)
         canvas.restore()
@@ -104,7 +156,8 @@ class MyCustomView @JvmOverloads constructor(
             minutePointerWidth / 2,
             radius / 6
         )
-        myPaint.color = Color.RED
+        myPaint.color = minutePointerColor
+
         myPaint.strokeWidth = 20f
         canvas.drawRoundRect(rectMinute, pointerRange, pointerRange, myPaint)
         canvas.restore()
@@ -118,14 +171,13 @@ class MyCustomView @JvmOverloads constructor(
             secondPointerWidth / 2,
             radius / 6
         )
-        myPaint.color = Color.BLUE
+        myPaint.color = secondPointerColor
         myPaint.strokeWidth = 10f
         canvas.drawRoundRect(rectSecond, pointerRange, pointerRange, myPaint)
         canvas.restore()
 
         // Рисуем маленький круг сверху стрелок
-        myPaint.style = Paint.Style.FILL
         myPaint.color = Color.BLACK
-        canvas.drawCircle(0f, 0f, secondPointerWidth * 4, myPaint)
+        canvas.drawCircle(0f, 0f, 4f * 4, myPaint)
     }
 }

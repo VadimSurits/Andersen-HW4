@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyCustomView">
+        <attr name="hourPointerColor" format="color" />
+        <attr name="minutePointerColor" format="color" />
+        <attr name="secondPointerColor" format="color" />
+        <attr name="hourPointerWidth" format="dimension" />
+        <attr name="minutePointerWidth" format="dimension" />
+        <attr name="secondPointerWidth" format="dimension" />
+    </declare-styleable>
+</resources>
